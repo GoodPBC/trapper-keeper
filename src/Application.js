@@ -3,6 +3,17 @@ import "./Application.css";
 
 import { Storage } from "aws-amplify";
 
+class S3Image extends Component {
+  render() {
+    const file = this.props.file;
+    return (
+      <article>
+        <img src={file} alt="" />
+      </article>
+    );
+  }
+}
+
 class Application extends Component {
   state = {
     files: []
@@ -17,7 +28,7 @@ class Application extends Component {
     const urls = await Promise.all(
       files.map(async file => await Storage.get(file.key))
     );
-    console.log({ urls });
+    this.setState({ files: urls });
   }
 
   handleSubmit = event => {
@@ -36,7 +47,11 @@ class Application extends Component {
           <input type="file" ref={input => (this.fileInput = input)} />
           <input className="full-width" type="submit" />
         </form>
-        <section className="Application-images" />
+        <section className="Application-images">
+          {this.state.files.map(file => {
+            return <S3Image file={file} key={file} />;
+          })}
+        </section>
       </div>
     );
   }
