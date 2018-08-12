@@ -32,13 +32,7 @@ class Application extends Component {
   async componentDidMount() {
     //get s3 bucket key list
     const files = await Storage.list("");
-    //log list to console
-    console.log(files);
-
-    const urls = await Promise.all(
-      files.map(async file => await Storage.get(file.key))
-    );
-    this.setState({ files: urls });
+    this.setState({ files });
   }
 
   handleSubmit = event => {
@@ -59,7 +53,7 @@ class Application extends Component {
         </form>
         <section className="Application-images">
           {this.state.files.map(file => {
-            return <S3Image file={file} key={file} />;
+            return <S3Image S3Key={file.key} key={file.key} />;
           })}
         </section>
       </div>
