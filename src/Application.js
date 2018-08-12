@@ -8,11 +8,17 @@ class Application extends Component {
     files: []
   };
 
-  componentDidMount = () => {
-    Storage.list("").then(files => {
-      console.log(files);
-    });
-  };
+  async componentDidMount() {
+    //get s3 bucket key list
+    const files = await Storage.list("");
+    //log list to console
+    console.log(files);
+
+    const urls = await Promise.all(
+      files.map(async file => await Storage.get(file.key))
+    );
+    console.log({ urls });
+  }
 
   handleSubmit = event => {
     event.preventDefault();
