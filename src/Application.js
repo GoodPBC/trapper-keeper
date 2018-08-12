@@ -4,11 +4,21 @@ import "./Application.css";
 import { Storage } from "aws-amplify";
 
 class S3Image extends Component {
+  // set src to null in state. We wont show component until image is ready
+  state = { src: null };
+
+  async componentDidMount() {
+    const { S3Key } = this.props;
+    const src = await Storage.get(S3Key);
+    this.setState({ src });
+  }
   render() {
-    const file = this.props.file;
+    const { src } = this.state;
+    //if we do not have src url,
+    if (!src) return null;
     return (
       <article>
-        <img src={file} alt="" />
+        <img src={src} alt="" />
       </article>
     );
   }
