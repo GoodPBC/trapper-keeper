@@ -1,15 +1,21 @@
-import React, { Component } from 'react';
-import './Application.css';
+import React, { Component } from "react";
+import "./Application.css";
 
-import { Storage } from 'aws-amplify';
+import { Storage } from "aws-amplify";
 
 class S3Image extends Component {
-  state = { src: null };
+  state = {
+    src: null
+  };
 
   async componentDidMount() {
     const { s3key } = this.props;
-    const src = await Storage.get(s3key, { expires: 10 });
-    this.setState({ src });
+    const src = await Storage.get(s3key, {
+      expires: 10
+    });
+    this.setState({
+      src
+    });
   }
 
   render() {
@@ -17,7 +23,7 @@ class S3Image extends Component {
     if (!src) return null;
     return (
       <article>
-        <img src={src} />
+        <img src={src} alt="" />
       </article>
     );
   }
@@ -25,12 +31,14 @@ class S3Image extends Component {
 
 class Application extends Component {
   state = {
-    files: [],
+    files: []
   };
 
   async componentDidMount() {
-    const files = await Storage.list('');
-    this.setState({ files });
+    const files = await Storage.list("");
+    this.setState({
+      files
+    });
   }
 
   handleSubmit = event => {
@@ -40,8 +48,12 @@ class Application extends Component {
     const { name } = file;
 
     Storage.put(name, file).then(response => {
-      console.log('Storage.put', { response });
-      this.setState({ files: [...this.state.files, response] });
+      console.log("Storage.put", {
+        response
+      });
+      this.setState({
+        files: [...this.state.files, response]
+      });
     });
   };
 
@@ -49,14 +61,15 @@ class Application extends Component {
     return (
       <div className="Application">
         <form className="NewItem" onSubmit={this.handleSubmit}>
-          <input type="file" ref={input => (this.fileInput = input)} />
+          <input type="file" ref={input => (this.fileInput = input)} />{" "}
           <input className="full-width" type="submit" />
-        </form>
+        </form>{" "}
         <section className="Application-images">
+          {" "}
           {this.state.files.map(file => {
             return <S3Image s3key={file.key} key={file.key} />;
-          })}
-        </section>
+          })}{" "}
+        </section>{" "}
       </div>
     );
   }
